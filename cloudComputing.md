@@ -51,9 +51,9 @@ Linux一开始出现是在学OS这门课的时候，当时学习热情不高，�
 
 * **操作系统：**`Red Hat（64-bit）      `
 
-* **光驱：**`CentOs-7-x86_64-Minimal-1908.iso`(或其他版本也可)
+* **光驱：**`CentOS-7-x86_64-DVD-1708.iso`(不能是Mini/精简版)
 
-* **硬盘容量：**`20GB（8GB也可）`
+* **硬盘容量：**`1GB（500MB也可）`
 
 如果不知道虚拟机的具体安装步骤，请看参考教程：https://gitee.com/aroming/course_os/blob/master/Experiments/Expt_Guides/OS-E01_Guide/OS-E01_guide.md#%E5%AE%9E%E9%AA%8C%E5%86%85%E5%AE%B9%E6%8C%87%E5%BC%95
 
@@ -69,7 +69,7 @@ passwd admin
 **1.查看网卡状态：**
 
 ```
-ifconfig
+ifconfig（可能找不到命令，跳过）
 
 cd /etc/sysconfig/network-scripts,cat ifcfg-enp0s3(网卡根据自己的,如enp0s3)
 
@@ -83,10 +83,12 @@ vi ifcfg-ens33
 BOOTPROTO=static  
 NM_CONTROLLED=no
 ONBOOT=yes
-IPADDR=192.168.10.111（往后是112,113...）
+IPADDR=192.168.10.111（该IPADDR前三部分要匹配自己电脑）
 NATMASK=255.255.255.0 
 GATEWAY=192.168.10.1
 ```
+
+<font size="3" color=red >192.168.10要根据电脑设置，进入电脑cmd输入ipconfig，然后查看当前网络的IPv4地址和默认网关 比如为192.168.10，那么你的虚拟机IP就要设置为192.168.10.xxx，默认网关则都要一致 </font>
 
 **保存退出，Esc，:wq**
 
@@ -99,7 +101,7 @@ ping www.baidu.com
 
 可以ping通代表网卡配置完成。
 
-<font size="3" color=red>另：如果虚拟机要连接其他主机，需要修改网卡为桥接模式</font>
+<font size="3" color=red>另：如果虚拟机要连接其他主机，需要修改网卡为桥接模式,并选择正确桥接网卡name</font>
 
 **4. 配置主机名**
 
@@ -113,7 +115,7 @@ vi hostname
 ```
 
 
-**5. 配置防火墙**
+**5. 配置防火墙（可跳过）**
 
 ```
 firewall-cmd --zone=public --add-port=端口号/tcp --permanent
@@ -139,7 +141,7 @@ MySQL Cluster的常用端口：1186、2202、3306。
 
 #### 4. 免密码登录配置(全程admin)：
 
-**1. 新建用于集群的admin用户，每台主机都建一个**
+**1. 新建用于集群的admin用户，每台主机都建一个（已有则跳过）**
 
 ```
 useradd admin
@@ -222,7 +224,7 @@ scp  -r   /home/admin/要传输的文件  root@IP地址/home/
 
 ### 进入linux系统后，想移除到win界面移不出来：
       
-      很简单，直接shift+ctrl即可。
+      界面右下角有提示。
 
 ### 如何把已创建的文件复制到另一路径下：
 
