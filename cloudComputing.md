@@ -96,7 +96,7 @@ GATEWAY=192.168.10.1
 ```
 service network restart
 
-ping www.baidu.com
+ping 192.168.10.111(根据自己刚才设置的IP)
 ```
 
 可以ping通代表网卡配置完成。
@@ -260,8 +260,8 @@ ping: www.baidu.com: Name or service not known
         1.可以查看网卡是否启动、IP地址是否存在：ip addr
         如果有enp0s3和inet 地址...代表网卡配置成功，可
         service network start
-
-        2.改变网卡为桥接模式
+      
+        2.修改网卡配置BOOTPROTO为dhcp（自动分配），如果为static，则ping不通。
 
 #### 在关闭防火墙到时候，出现：
 
