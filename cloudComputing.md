@@ -53,7 +53,7 @@ Linux一开始出现是在学OS这门课的时候，当时学习热情不高，�
 
 * **光驱：**`CentOS-7-x86_64-DVD-1708.iso`(不能是Mini/精简版)
 
-* **硬盘容量：**`1GB（500MB也可）`
+* **硬盘容量：**`8GB（500MB以上也可）`
 
 如果不知道虚拟机的具体安装步骤，请看参考教程：https://gitee.com/aroming/course_os/blob/master/Experiments/Expt_Guides/OS-E01_Guide/OS-E01_guide.md#%E5%AE%9E%E9%AA%8C%E5%86%85%E5%AE%B9%E6%8C%87%E5%BC%95
 
@@ -224,7 +224,7 @@ scp  -r   /home/admin/要传输的文件  root@IP地址/home/
 
 ### 进入linux系统后，想移除到win界面移不出来：
       
-      界面右下角有提示。
+      界面右下角有提示，照着按即可退出。
 
 ### 如何把已创建的文件复制到另一路径下：
 
