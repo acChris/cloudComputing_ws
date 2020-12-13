@@ -15,6 +15,7 @@ Linux一开始出现是在学OS这门课的时候，当时学习热情不高，�
       - [3. 创建新用户admin](#3-创建新用户admin)
       - [4. 配置虚拟机网卡：](#4-配置虚拟机网卡)
       - [4. 免密码登录配置(全程admin)：](#4-免密码登录配置全程admin)
+      - [5.](#5)
   - [相关操作](#相关操作)
       - [1. 切换当前用户(假设当前用户为root)：](#1-切换当前用户假设当前用户为root)
       - [2. 挂载光盘：](#2-挂载光盘)
@@ -24,6 +25,7 @@ Linux一开始出现是在学OS这门课的时候，当时学习热情不高，�
     - [进入linux系统后，想移除到win界面移不出来：](#进入linux系统后想移除到win界面移不出来)
     - [如何把已创建的文件复制到另一路径下：](#如何把已创建的文件复制到另一路径下)
     - [输入ifconfig无反应：](#输入ifconfig无反应)
+    - [传输文件出现错误或常见cannot route to 某台主机](#传输文件出现错误或常见cannot-route-to-某台主机)
     - [linux中查看IP地址：](#linux中查看ip地址)
       - [ping www.baidu.com失败，linux上不了网：](#ping-wwwbaiducom失败linux上不了网)
       - [在关闭防火墙到时候，出现：](#在关闭防火墙到时候出现)
@@ -182,6 +184,86 @@ $ ls
 如果没有提示让你输入Cluster-02的
 admin用户的密码，则说明配置正确。
 
+#### 5.
+
+前提：卸载原有JDK(每台主机)
+
+``` 
+rpm-qa |grep java（搜索已装的JDK）
+
+rpm-qa |grep jdk
+
+rpm -e 软件包名（删除已安装的JDK）
+
+yum remove 软件名（删除关联的依赖软件包）
+```
+
+1. 把如图文件从本机移动到主机1中：
+
+![](/images/trans%20files%20to%20C1.jpg)
+
+2. 在admin@Cluster1 ~(以下简称为C1)目录(可用命令`cd ~`进入)中：
+
+```
+cd setups 
+
+ls
+```
+
+3. 在admin@C1 ~ 中：
+
+```
+mkdir java
+
+ls
+
+cd java
+
+tar -xzf ~/setups/jdk-8u131-linux-x64.tar.gz
+
+ls
+```
+
+如图：
+
+![](/images/tar%20files%20into%20java.jpg)
+
+4. admin@C1 java :
+
+```vi ~/.bash_profile```
+
+在其尾部添加：
+
+```
+#javaenvironment
+JAVA_HOME=/home/admin/java/jdk1.8.0_131
+CLASSPATH=.:$JAVA_HOME/lib/tools.jar:$JAVA_HOME/lib/dt.jar
+PATH=$JAVA_HOME/bin:$PATH
+export JAVA_HOME CLASSPATH PATH
+```
+
+source ~/.bash_profile（使得环境变量即刻生效）
+
+5. 检查环境变量是否正确并验证JDK的安装配置（确定已装可跳过）
+
+```
+echo $JAVA_HOME
+echo $CLASSPATH
+echo $PATH
+java-version
+javac-version
+```
+
+6. 同步JDK的安装和配置：
+
+在admin@C1 中：
+
+```
+scp -r ~/java ~/.bash_profile admin@Cluster-02:/home/admin（将java目录和.bash_profile发送给集群中其他主机）
+
+source ~/.bash_profile（然后每台主机执行该语句，使得环境变量生效）
+```
+
 
 
 ## 相关操作
@@ -241,7 +323,11 @@ scp  -r   /home/admin/要传输的文件  root@IP地址/home/
    
       3.如果没网络下载不了，检查网卡是否配置为dhcp，最好是dhcp（linux自动配置），然后重启一下即可
 
-     
+### 传输文件出现错误或常见cannot route to 某台主机
+
+检查每台机器是否网卡配置正确并且都为桥接模式
+各主机/etc/hosts应该一致，并都有全部主机的IP
+各主机的IP设置正确。
 
 ### linux中查看IP地址：
 
