@@ -15,7 +15,9 @@ Linux一开始出现是在学OS这门课的时候，当时学习热情不高，�
       - [3. 创建新用户admin](#3-创建新用户admin)
       - [4. 配置虚拟机网卡：](#4-配置虚拟机网卡)
       - [4. 免密码登录配置(全程admin)：](#4-免密码登录配置全程admin)
-      - [5.](#5)
+      - [5.为虚拟机配置jdk](#5为虚拟机配置jdk)
+      - [6. zookeeper(以下简称zoo)的解压和配置](#6-zookeeper以下简称zoo的解压和配置)
+      - [7.hadoop的安装和配置：](#7hadoop的安装和配置)
   - [相关操作](#相关操作)
       - [1. 切换当前用户(假设当前用户为root)：](#1-切换当前用户假设当前用户为root)
       - [2. 挂载光盘：](#2-挂载光盘)
@@ -25,7 +27,7 @@ Linux一开始出现是在学OS这门课的时候，当时学习热情不高，�
     - [进入linux系统后，想移除到win界面移不出来：](#进入linux系统后想移除到win界面移不出来)
     - [如何把已创建的文件复制到另一路径下：](#如何把已创建的文件复制到另一路径下)
     - [输入ifconfig无反应：](#输入ifconfig无反应)
-    - [传输文件出现错误或常见cannot route to 某台主机](#传输文件出现错误或常见cannot-route-to-某台主机)
+    - [传输文件出现错误或常见no route to host：](#传输文件出现错误或常见no-route-to-host)
     - [linux中查看IP地址：](#linux中查看ip地址)
       - [ping www.baidu.com失败，linux上不了网：](#ping-wwwbaiducom失败linux上不了网)
       - [在关闭防火墙到时候，出现：](#在关闭防火墙到时候出现)
@@ -184,7 +186,9 @@ $ ls
 如果没有提示让你输入Cluster-02的
 admin用户的密码，则说明配置正确。
 
-#### 5.
+#### 5.为虚拟机配置jdk
+
+* 所需文件：jdk-8u131-linux-x64.tar.gz
 
 前提：卸载原有JDK(每台主机)
 
@@ -264,6 +268,50 @@ scp -r ~/java ~/.bash_profile admin@Cluster-02:/home/admin（将java目录和.ba
 source ~/.bash_profile（然后每台主机执行该语句，使得环境变量生效）
 ```
 
+* 验证其他主机的环境变量是否生效：返回上一个5. 检查环境变量是否正确并验证JDK的安装配置
+
+#### 6. zookeeper(以下简称zoo)的解压和配置
+
+* 所需文件：zookeeper-3.4.9.tar.gz(放在setups里面)
+
+1. 在admin@C1 ~下:
+
+```
+mkdir ~/zookeeper
+
+cd ~/zookeeper
+
+tar-xzf ~/setups/zookeeper-3.4.9.tar.gz
+
+ls(查看是否有~/zookeeper/zookeeper-3.4.9)
+```
+
+2. 为c1配置zoo环境变量：
+
+* 对配置文件进行修改，在文件末尾添加以下内容：
+
+```
+vi ~/.bash_profile
+
+#zookeeper environment
+ZOOKEEPER_HOME=/home/admin/zookeeper/zookeeper-3.4.9
+PATH=$ZOOKEEPER_HOME/bin:$PATH
+export ZOOKEEPER_HOME PATH
+```
+
+
+3. 验证c1是否成功安装zoo：
+
+
+4.  C1复制一份zoo_cfg为zoo_sample.cfg：
+
+5.  jdk的下载和配置：
+
+
+#### 7.hadoop的安装和配置：
+
+* 所需文件：hadoop-2.7.3.tar.gz
+
 
 
 ## 相关操作
@@ -323,7 +371,7 @@ scp  -r   /home/admin/要传输的文件  root@IP地址/home/
    
       3.如果没网络下载不了，检查网卡是否配置为dhcp，最好是dhcp（linux自动配置），然后重启一下即可
 
-### 传输文件出现错误或常见cannot route to 某台主机
+### 传输文件出现错误或常见no route to host：
 
 检查每台机器是否网卡配置正确并且都为桥接模式
 各主机/etc/hosts应该一致，并都有全部主机的IP
