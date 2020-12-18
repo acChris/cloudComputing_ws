@@ -173,6 +173,18 @@ $ ls
 
 （前提是已把hosts发给目标主机）`#scp -r /etc/hosts root@192.168.10.112:/etc`
 
+C1的hosts的内容如下，一般只需在其后添加各主机ip 主机服务器名:
+
+```
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+192.168.120.111    Cluster-01
+192.168.120.112    Cluster-02
+192.168.120.113	   Cluster-03
+192.168.120.114	   Cluster-04
+192.168.120.115	   Cluster-05
+```
+
 **$ ssh-copy-id -i ~/.ssh/id_rsa.pub admin@Cluster-02**
 
 **3. 验证免密码登录：**
