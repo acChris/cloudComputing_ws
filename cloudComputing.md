@@ -105,7 +105,7 @@ ping 192.168.10.111(根据自己刚才设置的IP)
 
 <font size="3" color=red>另：如果虚拟机要连接其他主机，需要修改网卡为桥接模式,并选择正确桥接网卡name</font>
 
-**4. 配置主机名**
+**4. 配置主机名(重启生效)**
 
 ```
 cd /etc/
@@ -114,6 +114,8 @@ vi hostname
 
 把原来的一行直接删掉，
 在末尾添加修改后的主机名Cluster-01(根据所在主机配置)
+
+reboot
 ```
 
 
@@ -140,6 +142,25 @@ Hadoop的常用端口：8019、8020、8030、8031、8032、8033、8040、8041、
 HBase的常用端口：2181、2888、3888、60000、60010、60020、60030。HBase的常用端口和Zookeeper有重复是因为HBase自带Zookeeper组件，使用独立Zookeeper时这些端口不会被启用，也就不会造成端口冲突。
 Hive的常用端口：9083、10000。
 MySQL Cluster的常用端口：1186、2202、3306。
+
+
+6. 将hosts发给其他主机：
+
+**在root@C1 ~下：**
+`#scp -r /etc/hosts root@192.168.10.112:/etc`
+
+C1的hosts的内容如下，一般只需在其后添加各主机ip 主机服务器名:
+
+```
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+192.168.120.111    Cluster-01
+192.168.120.112    Cluster-02
+192.168.120.113	   Cluster-03
+192.168.120.114	   Cluster-04
+192.168.120.115	   Cluster-05
+```
+
 
 #### 4. 免密码登录配置(全程admin)：
 
@@ -172,18 +193,6 @@ $ ls
 **将公钥文件拷贝给需要进行免密码登录的目标主机和目标用户**
 
 （前提是已把hosts发给目标主机）`#scp -r /etc/hosts root@192.168.10.112:/etc`
-
-C1的hosts的内容如下，一般只需在其后添加各主机ip 主机服务器名:
-
-```
-127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
-::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
-192.168.120.111    Cluster-01
-192.168.120.112    Cluster-02
-192.168.120.113	   Cluster-03
-192.168.120.114	   Cluster-04
-192.168.120.115	   Cluster-05
-```
 
 **$ ssh-copy-id -i ~/.ssh/id_rsa.pub admin@Cluster-02**
 
