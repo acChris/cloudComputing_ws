@@ -16,6 +16,8 @@ Linux一开始出现是在学OS这门课的时候，当时学习热情不高，�
       - [4. 配置虚拟机网卡：](#4-配置虚拟机网卡)
       - [4. 免密码登录配置(全程admin)：](#4-免密码登录配置全程admin)
       - [5.为虚拟机配置jdk](#5为虚拟机配置jdk)
+      - [zookeeper(以下简称zoo)的解压和配置](#zookeeper以下简称zoo的解压和配置)
+      - [hadoop的安装和配置：](#hadoop的安装和配置)
   - [相关操作](#相关操作)
       - [1. 切换当前用户(假设当前用户为root)：](#1-切换当前用户假设当前用户为root)
       - [2. 挂载光盘：](#2-挂载光盘)
@@ -147,7 +149,13 @@ MySQL Cluster的常用端口：1186、2202、3306。
 6. 将hosts发给其他主机：
 
 **在root@C1 ~下：**
-`#scp -r /etc/hosts root@192.168.10.112:/etc`
+
+**修改root的C1 hosts：**
+
+```
+cd /etc
+vi hosts
+```
 
 C1的hosts的内容如下，一般只需在其后添加各主机ip 主机服务器名:
 
@@ -161,6 +169,7 @@ C1的hosts的内容如下，一般只需在其后添加各主机ip 主机服务�
 192.168.120.115	   Cluster-05
 ```
 
+`#scp -r /etc/hosts root@192.168.10.112:/etc`
 
 #### 4. 免密码登录配置(全程admin)：
 
@@ -289,11 +298,11 @@ source ~/.bash_profile（然后每台主机执行该语句，使得环境变量�
 
 * 验证其他主机的环境变量是否生效：返回上一个5. 检查环境变量是否正确并验证JDK的安装配置
 
-<!-- #### zookeeper(以下简称zoo)的解压和配置
+#### zookeeper(以下简称zoo)的解压和配置
 
-* 所需文件：zookeeper-3.4.9.tar.gz(放在setups里面)
+* 所需文件：zookeeper-3.4.9.tar.gz(用xftp放在setups里面)
 
-1. 在admin@C1 ~下:
+1. 在admin@C1 ~(以下都是admin@C1,除非特指root)下:
 
 ```
 mkdir ~/zookeeper
@@ -319,19 +328,405 @@ export ZOOKEEPER_HOME PATH
 ```
 
 
-3. 验证c1是否成功安装zoo：
+3. 使环境生效，验证c1是否成功配置zoo环境变量：
 
+```
+source ~/.bash_profile
+echo $ZOOKEEPER_HOME
+echo $PATH
+```
 
 4.  C1复制一份zoo_cfg为zoo_sample.cfg：
 
-5.  jdk的下载和配置：
+```
+mkdir data logs
+ls
+
+cd zookeeper-3.4.9/conf
+cp zoo_sample.cfg zoo.cfg
+ls
+```
+
+5. 修改配置文件zoo.cfg：
+
+`vi zoo.cfg`
+
+**以下有则改之，无则在配置文件末尾添加**
+
+```
+dataDir=/home/admin/zookeeper/data
+dataLogDir=/home/admin/zookeeper/logs
+server.1=Cluster-01:2888:3888
+server.2=Cluster-02:2888:3888
+server.3=Cluster-03:2888:3888
+server.4=Cluster-04:2888:3888
+server.5=Cluster-05:2888:3888
+```
+
+6. (root下)分别在每台主机上添加防火墙,其端口号为2888,然后重启(已添加可跳过)：
+
+```
+su root
+
+firewall-cmd --zone=public --add-port=2888/tcp --permanent
+firewall-cmd --reload
+```
+**如果都是success则成功，进入下一步。**
+
+7. 同步安装和配置：
+
+**发送zoo目录和.bash_profile文件给集群中其他主机(2-5)**
+
+**在主机一上进行传输：**
+```
+scp -r ~/zookeeper ~/.bash_profile admin@Cluster-02:/home/admin
+```
+**在其他主机上验证是否生效：**
+
+```
+source ~/.bash_profile
+echo $ZOOKEEPER_HOME
+echo $PATH
+```
+
+8. 配置Zookeeper节点标识文件
+
+在admin@C1 ~下：
+
+`$echo '1'  > ~/zookeeper/data/myid`
+
+9. zoo完全分布模式启动和验证：
+
+操作前，关闭所有防火墙(所有主机，root下)
+
+```
+systemctl stop firewalld.service
+systemctl disable firewalld.service
+```
+
+10. 所有主机启动zoo服务，显示STARTED表示成功：
+
+`zkServer.sh start`
+
+11. 在所有主机上执行jps,查看java进程信息，若有`QuorumPeerMain`表示zoo启动成功:
+
+`jps`
+
+12. 查看每台主机的zoo状态,若只有一个`leader`，其余都是`follower`表示已成功：
+
+`zkServer.sh status`
+
+若防火墙未关闭，则出现Error contacting service. It is probably not running.。(关闭详见zoo/9.)
+
+13. 利用zoo的命令行连接zoo集群，*表示节点编号，可连接任何节点：
+
+`zkCli.sh -server Cluster-*:2181`
+显示CONNECTED表示连接正常，quit可以退出。
 
 
 #### hadoop的安装和配置：
 
-* 所需文件：hadoop-2.7.3.tar.gz
+* 所需文件：hadoop-2.7.3.tar.gz(用xftp放在setups里面)
 
- -->
+**如果没特指，以下都是在admin@C1下进行**
+
+1. 创建hadoop(以下简称hd)文件夹，解压相应hd的压缩文件：
+
+```
+mkdir hadoop 
+ls
+
+cd hadoop/
+ls
+tar -xzf ~/setups/hadoop-2.7.3.tar.gz
+ls
+```
+
+2. 配置hd相关环境变量并验证是否生效：
+
+```
+vi ~/.bash_profile
+对配置文件进行修改，在文件末尾添加以下内容：
+#hadoop environment
+HADOOP_HOME=/home/admin/hadoop/hadoop-2.7.3
+PATH=$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$PATH
+export HADOOP_HOME PATH
+```
+
+```
+source ~/.bash_profile
+echo $HADOOP_HOME
+echo $PATH
+hadoop version 
+```
+
+3. 分布模式配置:
+
+```
+cd ~/hadoop
+
+mkdir tmp name data journal
+```
+
+4. 修改hd配置文件：
+
+```
+cd ~/hadoop/hadoop-2.7.3/etc/hadoop
+vi hadoop-env.sh
+```
+
+找到配置项为JAVA_HOME所在行，修改为：
+
+`export JAVA_HOME=/home/admin/java/jdk1.8.0_131`
+
+**路径以实际解压位置路径为准**
+
+5. 修改配置文件：
+
+`vi core-site.xml`
+
+内容如下：
+<configuration>
+<property>
+<name>fs.defaultFS</name>
+<value>hdfs://hadoop-ha</value>
+</property>
+
+<property>
+<name>hadoop.tmp.dir</name>
+<value>/home/admin/hadoop/tmp</value>
+</property>
+
+<property>
+<name>ha.zookeeper.quorum</name>
+<value>Cluster-01:2181,Cluster-02:2181,Cluster-03:2181,Cluster-04:2181,Cluster-05:2181</value>
+</property>
+</configuration>
+
+`vi hdfs-site.xml`
+
+内容如下：
+<configuration>
+<property>
+<name>dfs.nameservices</name>
+<value>hadoop-ha</value>
+</property>
+<property>
+<name>dfs.ha.namenodes.hadoop-ha</name>
+<value>name-1,name-2</value>
+</property>
+<property>
+<name>dfs.namenode.rpc-address.hadoop-ha.name-1</name>
+<value>Cluster-01:9000</value>
+</property>
+<property>
+<name>dfs.namenode.http-address.hadoop-ha.name-1</name>
+<value>Cluster-01:50070</value>
+</property>
+<property>
+<name>dfs.namenode.rpc-address.hadoop-ha.name-2</name>
+<value>Cluster-02:9000</value>
+</property>
+<property>
+<name>dfs.namenode.http-address.hadoop-ha.name-2</name>
+<value>Cluster-02:50070</value>
+</property>
+<property>
+<name>dfs.namenode.shared.edits.dir</name>
+<value>qjournal://Cluster-03:8485;Cluster-04:8485;Cluster-05:8485/hadoop-ha</value>
+</property>
+<property>
+<name>dfs.journalnode.edits.dir</name>
+<value>/home/admin/hadoop/journal</value>
+</property>
+<property>
+<name>dfs.ha.automatic-failover.enabled</name>
+<value>true</value>
+</property>
+<property>
+<name>dfs.client.failover.proxy.provider.hadoop-ha</name>
+<value>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider</value>
+</property>
+<property>
+<name>dfs.ha.fencing.methods</name>
+<value>
+sshfence
+shell(/bin/true)
+</value>
+</property>
+<property>
+<name>dfs.ha.fencing.ssh.private-key-files</name>
+<value>/home/admin/.ssh/id_rsa</value>
+</property>
+<property>
+<name>dfs.ha.fencing.ssh.connect-timeout</name>
+<value>30000</value>
+</property>
+<property>
+<name>dfs.namenode.name.dir</name>
+<value>/home/admin/hadoop/name</value>
+</property>
+<property>
+<name>dfs.datanode.data.dir</name>
+<value>/home/admin/hadoop/data</value>
+</property>
+<property>
+<name>dfs.replication</name>
+<value>3</value>
+</property>
+</configuration>
+
+```
+cp mapred-site.xml template mapred-site.xml
+vi mapred-site.xml
+```
+修改内容如下：
+
+<configuration>
+<property>
+<name>mapreduce.framework.name</name>
+<value>yarn</value>
+</property>
+</configuration>
+
+`vi yarn-env.sh`
+
+找到JAVA_HOME所在行，改为：
+`export JAVA_HOME=/home/admin/java/jdk1.8.0_131`
+
+`vi yarn-site.xml`
+
+修改内容如下：
+
+<configuration>
+<!-- Site specific YARN congfiguration proerties -->
+<property>
+<name>yarn.resourcemanager.ha.enabled</name>
+<value>true</value>
+</property>
+<property>
+<name>yarn.resourcemanager.cluster-id</name>
+<value>yarn-ha</value>
+</property>
+<property>
+<name>yarn.resourcemanager.ha.rm-ids</name>
+<value>resource-1,resource-2</value>
+</property>
+<property>
+<name>yarn.resourcemanager.hostname.resource-1</name>
+<value>Cluster-01</value>
+</property>
+<property>
+<name>yarn.resourcemanager.hostname.resource-2</name>
+<value>Cluster-02</value>
+</property>
+<property>
+<name>yarn.resourcemanager.zk-address</name>
+<value>Cluster-01:2181,Cluster-02:2181,Cluster-03:2181,Cluster-04:2181,Cluster-05:2181</value>
+</property>
+<property>
+<name>yarn.nodemanager.aux-services</name>
+<value>mapreduce_shuffle</value>
+</property>
+</configuration>
+
+`vi slaves`
+
+删除原有所有内容，添加集群所有数据节点：
+
+```
+Cluster-03
+Cluster-04
+Cluster-05
+```
+
+6. 将hadoop目录和.bash_profile发给集群其他主机：
+
+```
+scp -r ~/hadoop ~/.bash_profile admin@Cluster-02:/home/admin 
+```
+
+7. 在每台主机上验证hd环境变量是否生效：
+
+```
+source ~/.bash_profile
+echo $HADOOP_HOME
+echo $PATH
+hadoop version
+```
+
+8. 在所有同步通信节点(C3-5)上执行，启动该服务(安装完仅一次)：
+
+`hadoop-daemon.sh start journalnode`
+
+在所有通信节点查看：
+```
+jps
+```
+若有JournalNode表示成功。
+
+9. 格式化HDFS(安装完仅一次)：
+
+`hadoop namenode -format`
+
+
+10. 将hadoop目录下的`name`目录发给集群所有备用主节点(这里只有C2)：
+
+```
+scp -r ~/hadoop/name admin@Cluster-02:/home/admin/hadoop
+```
+
+11. 在每台主机上查看zoo状态：
+
+`zkServer.sh status`
+
+没有出现follower或leader则重启:
+
+`zkServer.sh start`
+
+12. 对主节点切换控制信息进行格式化(仅一次)：
+
+`hdfs zkfc -formatZK`
+
+13. 在所有同步通信节点的主机：
+
+`hadoop-daemon.sh stop journalnode`
+
+14. 启动zoo集群：
+
+主节点(C1):
+`start-all.sh`
+
+备用主节点(C2)：
+`yarn-daemon.sh start resourcemanager`
+
+15. 在主节点使用jps，若有`NameNode`、`ResourceManager`、`DFSZKFailoverController`的三个进程表示成功
+
+`jps`
+
+可以使用命令hadoop dfsadmin -report 查看HDFS状态。
+
+16. 在其他主机上使用jps查看：
+
+方法1：`ssh 目标主机或IP地址`
+方法2：`xsheel中开启多台主机，jps直接查看`
+
+备用主节点(C2)若有`NameNode`、`ResourceManager`、`DFSZKFailoverController`的三个进程表示成功
+
+其他节点(C2-C5)若有`NameNode`、`ResourceManager`、`JournalNode`表示成功
+
+17. hd登录自己目录并查看文件：
+
+```
+hadoop fs -mkdir -p /user/admin
+hadoop fs -ls -R /
+```
+
+```
+cd ~/hadoop/hadoop-2.7.3/share/hadoop/mapreduce
+hadoop jar hadoop-mapreduce-examples-2.7.3.jar pi 2 1000
+```
+
 
 ## 相关操作
 
