@@ -221,9 +221,9 @@ admin用户的密码，则说明配置正确。
 前提：卸载原有JDK(每台主机)
 
 ``` 
-rpm-qa |grep java（搜索已装的JDK）
+rpm -qa |grep java（搜索已装的JDK）
 
-rpm-qa |grep jdk
+rpm -qa |grep jdk
 
 rpm -e 软件包名（删除已安装的JDK）
 
@@ -339,10 +339,11 @@ echo $PATH
 4.  C1复制一份zoo_cfg为zoo_sample.cfg：
 
 ```
+cd ~/zookeeper
 mkdir data logs
 ls
 
-cd zookeeper-3.4.9/conf
+cd ~/zookeeper-3.4.9/conf
 cp zoo_sample.cfg zoo.cfg
 ls
 ```
@@ -363,7 +364,7 @@ server.4=Cluster-04:2888:3888
 server.5=Cluster-05:2888:3888
 ```
 
-6. (root下)分别在每台主机上添加防火墙,其端口号为2888,然后重启(已添加可跳过)：
+6. (root下)分别在每台主机上添加防火墙,其端口号为2888,然后重启(跳过)：
 
 ```
 su root
@@ -391,9 +392,9 @@ echo $PATH
 
 8. 配置Zookeeper节点标识文件
 
-在admin@C1 ~下：
+在每台主机使用如下命令,如C1就是'1',C2是'2'：
 
-`$echo '1'  > ~/zookeeper/data/myid`
+`$echo '*'  > ~/zookeeper/data/myid`
 
 9. zoo完全分布模式启动和验证：
 
