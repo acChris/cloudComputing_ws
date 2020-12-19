@@ -336,18 +336,7 @@ echo $ZOOKEEPER_HOME
 echo $PATH
 ```
 
-4.  C1复制一份zoo_cfg为zoo_sample.cfg：
-
-```
-mkdir data logs
-ls
-
-cd zookeeper-3.4.9/conf
-cp zoo_sample.cfg zoo.cfg
-ls
-```
-
-5. 修改配置文件zoo.cfg：
+4.  修改配置文件zoo.cfg：
 
 `vi zoo.cfg`
 
@@ -361,6 +350,17 @@ server.2=Cluster-02:2888:3888
 server.3=Cluster-03:2888:3888
 server.4=Cluster-04:2888:3888
 server.5=Cluster-05:2888:3888
+```
+
+5. C1复制一份zoo_cfg为zoo_sample.cfg：
+
+```
+mkdir data logs
+ls
+
+cd zookeeper-3.4.9/conf
+cp zoo_sample.cfg zoo.cfg
+ls
 ```
 
 6. (root下)分别在每台主机上添加防火墙,其端口号为2888,然后重启(已添加可跳过)：
