@@ -230,11 +230,11 @@ rpm -e 软件包名（删除已安装的JDK）
 yum remove 软件名（删除关联的依赖软件包）
 ```
 
-1. 把如图文件从本机移动到主机1中：
+<!-- 1. 把如图文件从本机移动到主机1中：
 
-![trans_files_to_C1](./images/trans_files_to_C1.png)
+![trans_files_to_C1](./images/trans_files_to_C1.png) -->
 
-2. 在admin@Cluster1 ~(以下简称为C1)目录(可用命令`cd ~`进入)中：
+1. 在admin@Cluster1 ~(以下简称为C1)目录(可用命令`cd ~`进入)中：
 
 ```
 cd setups 
@@ -242,7 +242,7 @@ cd setups
 ls
 ```
 
-3. 在admin@C1 ~ 中：
+2. 在admin@C1 ~ 中：
 
 ```
 mkdir java
@@ -255,12 +255,12 @@ tar -xzf ~/setups/jdk-8u131-linux-x64.tar.gz
 
 ls
 ```
-
+<!-- 
 如图：
 
-![tar_files_into_java](./images/tar_files_into_java.png)
+![tar_files_into_java](./images/tar_files_into_java.png) -->
 
-4. admin@C1 java :
+3. admin@C1 java :
 
 ```vi ~/.bash_profile```
 
@@ -276,7 +276,7 @@ export JAVA_HOME CLASSPATH PATH
 
 source ~/.bash_profile（使得环境变量即刻生效）
 
-5. 检查环境变量是否正确并验证JDK的安装配置（确定已装可跳过）
+4. 检查环境变量是否正确并验证JDK的安装配置（确定已装可跳过）
 
 ```
 echo $JAVA_HOME
@@ -286,7 +286,7 @@ java-version
 javac-version
 ```
 
-6. 同步JDK的安装和配置：
+5. 同步JDK的安装和配置：
 
 在admin@C1 中：
 
