@@ -232,7 +232,7 @@ yum remove 软件名（删除关联的依赖软件包）
 
 1. 把如图文件从本机移动到主机1中：
 
-![](images/trans%20files%20to%20C1.jpg)
+![trans%20files%20to%20C1.jpg](/images/trans%20files%20to%20C1.jpg)
 
 2. 在admin@Cluster1 ~(以下简称为C1)目录(可用命令`cd ~`进入)中：
 
@@ -258,7 +258,7 @@ ls
 
 如图：
 
-![](images/tar%20files%20into%20java.jpg)
+![tar%20files%20into%20java.jpg](images/tar%20files%20into%20java.jpg)
 
 4. admin@C1 java :
 
