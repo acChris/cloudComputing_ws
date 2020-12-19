@@ -309,7 +309,7 @@ mkdir ~/zookeeper
 
 cd ~/zookeeper
 
-tar-xzf ~/setups/zookeeper-3.4.9.tar.gz
+tar -xzf ~/setups/zookeeper-3.4.9.tar.gz
 
 ls(查看是否有~/zookeeper/zookeeper-3.4.9)
 ```
