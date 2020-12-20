@@ -302,6 +302,8 @@ source ~/.bash_profile（然后每台主机执行该语句，使得环境变量�
 
 * 所需文件：zookeeper-3.4.9.tar.gz(用xftp放在setups里面)
 
+**!!!!如果没特指，以下都是在admin@C1下进行!!!!**
+
 1. 在admin@C1 ~(以下都是admin@C1,除非特指root)下:
 
 ```
@@ -429,7 +431,7 @@ systemctl disable firewalld.service
 
 * 所需文件：hadoop-2.7.3.tar.gz(用xftp放在setups里面)
 
-**如果没特指，以下都是在admin@C1下进行**
+**!!!!如果没特指，以下都是在admin@C1下进行!!!!**
 
 1. 创建hadoop(以下简称hd)文件夹，解压相应hd的压缩文件：
 
@@ -584,7 +586,7 @@ shell(/bin/true)
 ```
 
 ```
-cp mapred-site.xml template mapred-site.xml
+cp mapred-site.xml.template mapred-site.xml
 vi mapred-site.xml
 ```
 修改内容如下：
