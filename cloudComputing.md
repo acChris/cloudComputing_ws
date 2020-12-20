@@ -487,6 +487,8 @@ vi hadoop-env.sh
 `vi core-site.xml`
 
 内容如下：
+
+```
 <configuration>
 <property>
 <name>fs.defaultFS</name>
@@ -503,10 +505,13 @@ vi hadoop-env.sh
 <value>Cluster-01:2181,Cluster-02:2181,Cluster-03:2181,Cluster-04:2181,Cluster-05:2181</value>
 </property>
 </configuration>
+```
 
 `vi hdfs-site.xml`
 
 内容如下：
+
+```
 <configuration>
 <property>
 <name>dfs.nameservices</name>
@@ -576,6 +581,7 @@ shell(/bin/true)
 <value>3</value>
 </property>
 </configuration>
+```
 
 ```
 cp mapred-site.xml template mapred-site.xml
@@ -583,12 +589,14 @@ vi mapred-site.xml
 ```
 修改内容如下：
 
+```
 <configuration>
 <property>
 <name>mapreduce.framework.name</name>
 <value>yarn</value>
 </property>
 </configuration>
+```
 
 `vi yarn-env.sh`
 
@@ -599,6 +607,7 @@ vi mapred-site.xml
 
 修改内容如下：
 
+```
 <configuration>
 <!-- Site specific YARN congfiguration proerties -->
 <property>
@@ -630,6 +639,7 @@ vi mapred-site.xml
 <value>mapreduce_shuffle</value>
 </property>
 </configuration>
+```
 
 `vi slaves`
 
@@ -745,7 +755,7 @@ sudo　mount　-r　/dev/cdrom　~/cdrom
 
 **报错：**`no medium found on /dev/sr0`
 
-**解决方法：**在linux最下面一栏的光驱右击一下，选择已有的`centos`即可。如图左二：
+**解决方法：**在linux最下面一栏的光驱右击一下，选择已有的`centos`即可。
 <!-- ![](https://img2020.cnblogs.com/blog/2191525/202012/2191525-20201204235622741-460077983.png) -->
 
 #### 3. 卸载光盘：
