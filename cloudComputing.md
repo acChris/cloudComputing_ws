@@ -29,9 +29,9 @@ Linux一开始出现是在学OS这门课的时候，当时学习热情不高，�
     - [输入ifconfig无反应：](#输入ifconfig无反应)
     - [传输文件出现错误或常见no route to host：](#传输文件出现错误或常见no-route-to-host)
     - [linux中查看IP地址：](#linux中查看ip地址)
-      - [ping www.baidu.com失败，linux上不了网：](#ping-wwwbaiducom失败linux上不了网)
-      - [在关闭防火墙到时候，出现：](#在关闭防火墙到时候出现)
-      - [清除秘钥方式](#清除秘钥方式)
+    - [ping www.baidu.com失败，linux上不了网：](#ping-wwwbaiducom失败linux上不了网)
+    - [在关闭防火墙到时候，出现：](#在关闭防火墙到时候出现)
+    - [清除秘钥方式](#清除秘钥方式)
 
 
 ## 环境配置
@@ -811,7 +811,7 @@ ip addr
 或
 vi etc/config/network-scripts/ifcfg-enp0s3
 ```
-#### ping www.baidu.com失败，linux上不了网：
+### ping www.baidu.com失败，linux上不了网：
 
 [root@localhost ~]# ping www.baidu.com
 ping: www.baidu.com: Name or service not known
@@ -824,7 +824,7 @@ ping: www.baidu.com: Name or service not known
       
         2.修改网卡配置BOOTPROTO为dhcp（自动分配），如果为static，则ping不通。
 
-#### 在关闭防火墙到时候，出现：
+### 在关闭防火墙到时候，出现：
 
 `
 Redirecting to /bin/systemctl stop  iptables.service
@@ -834,13 +834,13 @@ Failed to stop iptables.service: Unit iptables.service not loaded.`
 
     yum install iptables-services
 
-#### 清除秘钥方式
+### 清除秘钥方式
 
     ssh-keygen -R 接目标地址  即可清除秘钥文件
 
 ![](https://img2020.cnblogs.com/blog/2191525/202012/2191525-20201208222158214-1613692676.png)
 
-<!-- #### sudo执行命令时提示找不到该命令
+<!-- ### sudo执行命令时提示找不到该命令
 
 1、切换到root用户， 以root用户身份来编辑文件/etc/sudoers：
 
