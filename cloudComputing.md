@@ -16,8 +16,8 @@ Linux一开始出现是在学OS这门课的时候，当时学习热情不高，�
       - [4. 配置虚拟机网卡：](#4-配置虚拟机网卡)
       - [4. 免密码登录配置(全程admin)：](#4-免密码登录配置全程admin)
       - [5.为虚拟机配置jdk](#5为虚拟机配置jdk)
-      - [zookeeper(以下简称zoo)的解压和配置](#zookeeper以下简称zoo的解压和配置)
-      - [hadoop的安装和配置：](#hadoop的安装和配置)
+    - [zookeeper(以下简称zoo)的解压和配置](#zookeeper以下简称zoo的解压和配置)
+    - [hadoop的安装和配置：](#hadoop的安装和配置)
   - [相关操作](#相关操作)
       - [1. 切换当前用户(假设当前用户为root)：](#1-切换当前用户假设当前用户为root)
       - [2. 挂载光盘：](#2-挂载光盘)
@@ -298,7 +298,7 @@ source ~/.bash_profile（然后每台主机执行该语句，使得环境变量�
 
 * 验证其他主机的环境变量是否生效：返回上一个5. 检查环境变量是否正确并验证JDK的安装配置
 
-#### zookeeper(以下简称zoo)的解压和配置
+### zookeeper(以下简称zoo)的解压和配置
 
 * 所需文件：zookeeper-3.4.9.tar.gz(用xftp放在setups里面)
 
@@ -427,7 +427,7 @@ systemctl disable firewalld.service
 显示CONNECTED表示连接正常，quit可以退出。
 
 
-#### hadoop的安装和配置：
+### hadoop的安装和配置：
 
 * 所需文件：hadoop-2.7.3.tar.gz(用xftp放在setups里面)
 
