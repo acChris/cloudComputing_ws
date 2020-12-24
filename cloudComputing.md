@@ -68,6 +68,18 @@ useradd admin
 passwd admin
 ```
 
+给admin授予权限：
+```
+visudo
+```
+
+找到配置项  root    ALL=(ALL)    ALL，
+在其下面添加      admin  ALL=(root)  /bin/mount,/bin/umount
+
+**说明：**
+这里是给admin全路径的书写权限。
+
+
 #### 4. 配置虚拟机网卡：
 
 **1.查看网卡状态：**
@@ -88,8 +100,8 @@ BOOTPROTO=static
 NM_CONTROLLED=no
 ONBOOT=yes
 IPADDR=192.168.10.111（该IPADDR前三部分要匹配自己电脑）
-NETMASK=255.255.255.0 
-GATEWAY=192.168.10.1
+NETMASK=255.255.255.0 (根据自己网络实际)
+GATEWAY=192.168.10.1(根据自己网络实际)
 ```
 
 <font size="3" color=red >192.168.10要根据电脑设置，进入电脑cmd输入ipconfig，然后查看当前网络的IPv4地址和默认网关 比如为192.168.10，那么你的虚拟机IP就要设置为192.168.10.xxx，默认网关则都要一致 </font>
@@ -229,6 +241,9 @@ rpm -e 软件包名（删除已安装的JDK）
 
 yum remove 软件名（删除关联的依赖软件包）
 ```
+
+**说明：**
+如果前两步没有显示什么东西，说明没有下载过java或jdk，可以不用删除。
 
 <!-- 1. 把如图文件从本机移动到主机1中：
 
@@ -393,7 +408,7 @@ echo $PATH
 ```
 
 8. 配置Zookeeper节点标识文件
-
+ 
 在每台主机使用如下命令,如C1就是'1',C2是'2'：
 
 `$echo '*'  > ~/zookeeper/data/myid`
@@ -411,19 +426,29 @@ systemctl disable firewalld.service
 
 `zkServer.sh start`
 
-11. 在所有主机上执行jps,查看java进程信息，若有`QuorumPeerMain`表示zoo启动成功:
+**说明：** 若一直显示无权限，可以考虑给java和zookeeper文件夹加最高权限。
+
+      chmod -R 777 文件夹
+
+1.   在所有主机上执行jps,查看java进程信息，若有`QuorumPeerMain`表示zoo启动成功:
 
 `jps`
 
-12. 查看每台主机的zoo状态,若只有一个`leader`，其余都是`follower`表示已成功：
+ 如果没出现，说明开启失败，建议确定是否在admin下开启zoo或者关闭防火墙再试试。
+
+1.   查看每台主机的zoo状态,若只有一个`leader`，其余都是`follower`表示已成功：
 
 `zkServer.sh status`
 
 若防火墙未关闭，则出现Error contacting service. It is probably not running.。(关闭详见zoo/9.)
 
-13. 利用zoo的命令行连接zoo集群，*表示节点编号，可连接任何节点：
+**说明：** 若此处显示不是`leader`或`follower`,可能是你zoo开启失败，检查是否在admin下执行zkServer.sh start。
+
+
+1.   利用zoo的命令行连接zoo集群，*表示节点编号，可连接任何节点：
 
 `zkCli.sh -server Cluster-*:2181`
+
 显示CONNECTED表示连接正常，quit可以退出。
 
 
@@ -484,7 +509,7 @@ vi hadoop-env.sh
 
 **路径以实际解压位置路径为准**
 
-5. 修改配置文件：
+5. 修改配置文件(可以在xsheel下右键复制)：
 
 `vi core-site.xml`
 
@@ -677,6 +702,8 @@ hadoop version
 jps
 ```
 若有JournalNode表示成功。
+
+**说明：** 如果没有，说明启动失败，可以考虑重现(6.将hadoop...)，重现后还是没有，建议回到hadoop开始检查一遍配置文件。
 
 9. 格式化HDFS(安装完仅一次)：
 
